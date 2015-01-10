@@ -1,0 +1,15 @@
+td {
+  border: solid 2px black;
+  padding: 1vw;
+}
+
+table {
+  border: solid 2px black;
+}
+
+a {
+  border: solid 2px black;
+  background-color: lightgrey;
+  border-radius: 5px;
+  padding: .5vw;
+}

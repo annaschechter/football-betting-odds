@@ -35,7 +35,52 @@ app.get('/matches', function(req, res) {
   request.post(options, function(err, res1) {
     if(err) console.log(err)
     else res.send(res1.body);
+  });
+});
+
+app.get('/getMarketId/:matchId', function(req, res) {
+  var matchId = req.params.matchId;
+  console.log(matchId);
+  var data = { "filter": {"eventIds": [matchId], "marketName": "Match Odds"}, "maxResults": "999" };
+  var options = setOptions(data, "listMarketCatalogue/");
+  
+  request.post(options, function(err, res1) {
+    if(err) {
+      console.log(err);
+      return err;
+    } else {
       console.log(res1.body);
+      res1.body.forEach(function(market) {
+        if(market.marketName == "Match Odds") {
+          console.log(market.marketId);
+          res.send(market.marketId);
+        }
+      });
+    }
+  });
+})
+
+app.get('/getOdds/:marketId', function(req, res) {
+  var marketId = req.params.marketId;
+  var data1 = {
+    "marketIds": [marketId],
+    "maxResults": "20"  
+  };
+  console.log(data1);
+  var options1 = setOptions(data1, "listMarketBook/");
+  request.post(options1, function(err, res1) {
+    if(err) {
+      console.log(err)
+    } else {
+      console.log(res1.body)
+      if(res1.body[0].status == "OPEN") {
+        var odds = {"win":res1.body[0].runners[0].lastPriceTraded, "loose":res1.body[0].runners[1].lastPriceTraded, "draw":res1.body[0].runners[2].lastPriceTraded}
+        console.log(odds);
+        res.send(odds)
+      } else {
+        res.send(null)
+      }
+    }
   });
 });
 

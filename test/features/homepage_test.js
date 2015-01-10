@@ -29,5 +29,11 @@ describe('User visits homepage', function() {
   it('and after clicking the button can see all matches running atm', function() {
     browser.clickLink('See what matches are running now');
     expect(browser.html('table')).to.contain("<tr>");
-  })
+  });
+
+  it('and clicks "see all matches" and clicks on a match id', function(done) {
+    browser.clickLink('See what matches are running now');
+    browser.clickLink('27335117');
+    expect(browser.html('h2')).to.contain("win");
+  });
 })

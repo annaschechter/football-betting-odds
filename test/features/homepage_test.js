@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'test';
+NODE_ENV = 'test';
 var server = require('../../server');
 var chai = require('chai');
 var expect = chai.expect;

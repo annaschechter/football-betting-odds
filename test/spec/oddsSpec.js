@@ -15,8 +15,12 @@ describe("Odds", function() {
     expect(odds.team1Loose).toEqual(13.6);
   });
 
-  it('odds know the price for team1 to win', function() {
+  it('odds know the price for a draw', function() {
     expect(odds.draw).toEqual(5);
+  });
+
+  it('odds know the time they were recorded at', function() {
+    expect(odds.recordedAt instanceof Date).toBe(true);
   })
 
 }); 

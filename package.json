@@ -17,6 +17,6 @@
     "chai": "^1.10.0",
     "jasmine-node": "^1.14.5",
     "mocha": "^2.1.0",
-    "phantomjs": "^1.9.13"
+    "zombie": "^2.5.1"
   }
 }

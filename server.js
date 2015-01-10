@@ -3,6 +3,7 @@ var server = require('http').Server(app);
 
 app.set('view engine', 'ejs');
 app.set('views',__dirname + '/views');
+app.use(require('express').static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.render('index');

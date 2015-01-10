@@ -22,7 +22,12 @@ describe('User visits homepage', function() {
     expect(browser.html('h1')).to.contain("Football Betting Odds");
   });
 
-  it('and can see a button "See what matches are running now"', function() {
-    expect(browser.html('button')).to.contain("See what matches are running now");
+  it('and can see a link "See what matches are running now"', function() {
+    expect(browser.html('a')).to.contain("See what matches are running now");
   });
+
+  it('and after clicking the button can see all matches running atm', function() {
+    browser.clickLink('See what matches are running now');
+    expect(browser.html('table')).to.contain("<tr>");
+  })
 })

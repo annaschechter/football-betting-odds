@@ -2,6 +2,8 @@ var app = require('express')();
 var server = require('http').Server(app);
 var request = require('request');
 var config = require('./config');
+var Odds = require('./lib/odds');
+var Match = require('./lib/match');
 
 app.set('view engine', 'ejs');
 app.set('views',__dirname + '/views');
@@ -24,12 +26,11 @@ var setOptions = function(data, route) {
     body: data,
     json: true,
   }
-  console.log(options);
   return options;
 }
 
 app.get('/matches', function(req, res) {
-  var data = { "filter": {"eventTypeIds": [1], "inPlayOnly": true} };
+  var data = { "filter": {"eventTypeIds": [1], "inPlayOnly": true, "marketTypeCodes": ["MATCH_ODDS"]} };
   var options = setOptions(data, "listEvents/");
 
   request.post(options, function(err, res1) {
@@ -38,27 +39,19 @@ app.get('/matches', function(req, res) {
   });
 });
 
-app.get('/getMarketId/:matchId', function(req, res) {
-  var matchId = req.params.matchId;
-  console.log(matchId);
-  var data = { "filter": {"eventIds": [matchId], "marketName": "Match Odds"}, "maxResults": "999" };
+var match = new Match();
+app.get('/getMarketId/:matchId/:matchName', function(req, res) {
+  match.eventId = req.params.matchId;
+  match.team1 = req.params.matchName.split('v')[0];
+  match.team2 = req.params.matchName.split('v')[1];
+  var data = { "filter": {"eventIds": [match.eventId], "marketTypeCodes": ["MATCH_ODDS"]}, "maxResults": "1" };
   var options = setOptions(data, "listMarketCatalogue/");
   
   request.post(options, function(err, res1) {
-    if(err) {
-      console.log(err);
-      return err;
-    } else {
-      console.log(res1.body);
-      res1.body.forEach(function(market) {
-        if(market.marketName == "Match Odds") {
-          console.log(market.marketId);
-          res.send(market.marketId);
-        }
-      });
-    }
+    if(err) console.log(err);
+    else res.send(res1.body[0].marketId);
   });
-})
+});
 
 app.get('/getOdds/:marketId', function(req, res) {
   var marketId = req.params.marketId;
@@ -66,19 +59,21 @@ app.get('/getOdds/:marketId', function(req, res) {
     "marketIds": [marketId],
     "maxResults": "20"  
   };
-  console.log(data1);
   var options1 = setOptions(data1, "listMarketBook/");
   request.post(options1, function(err, res1) {
     if(err) {
       console.log(err)
     } else {
-      console.log(res1.body)
       if(res1.body[0].status == "OPEN") {
-        var odds = {"win":res1.body[0].runners[0].lastPriceTraded, "loose":res1.body[0].runners[1].lastPriceTraded, "draw":res1.body[0].runners[2].lastPriceTraded}
-        console.log(odds);
-        res.send(odds)
+        var odds = new Odds(res1.body[0].runners[0].lastPriceTraded, 
+                            res1.body[0].runners[1].lastPriceTraded,
+                            res1.body[0].runners[2].lastPriceTraded);
+        match.updateOdds(odds);
+        res.send(odds);
       } else {
-        res.send(null)
+        var odds = new Odds(0, 0, 0);
+        match.updateOdds(odds);
+        res.send(odds);
       }
     }
   });

@@ -31,9 +31,9 @@ describe('User visits homepage', function() {
     expect(browser.html('table')).to.contain("<tr>");
   });
 
-  it('and clicks "see all matches" and clicks on a match id', function(done) {
-    browser.clickLink('See what matches are running now');
-    browser.clickLink('27335117');
-    expect(browser.html('h2')).to.contain("win");
-  });
+  // it('and clicks "see all matches" and clicks on a match id', function(done) {
+  //   browser.clickLink('See what matches are running now');
+  //   browser.clickLink('27335117');
+  //   expect(browser.html('h2')).to.contain("win");
+  // });
 })

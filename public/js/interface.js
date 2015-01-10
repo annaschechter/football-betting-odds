@@ -2,24 +2,28 @@ $(document).ready(function() {
 
   $('a').click(function(){
     $('table').append('<tr><td>Match ID</td><td>Match Name</td><td>Started At</td></tr>');
-    $.get('/matches', function(data) {
-      $.each(data, function(index, value) {
-        var id = value.event.id;
-        $('table').append("<tr><td id="+id+">"+id+"</td><td>"+value.event.name+"</td><td>"+value.event.openDate+"</td></tr>");;
-          $("#"+id).click(function(){
-            console.log(id);
-            $.get('/getMarketId/'+id, function(data) {
-              $('p').text(data);
-              $.get('/getOdds/'+data, function(data1) {
-                console.log(data1);
-                $.each(data1, function(key1, value1) {
-                  console.log(value);
-                  $('h2').append(key1+":"+value1);
-                }); 
-              })
-            });
-          });  
+    $.get('/matches', function(matches) {
+      $.each(matches, function(index, value) {
+        var matchId = value.event.id;
+        var matchName = value.event.name;
+        $('table').append("<tr><td id="+matchId+">"+matchId+"</td><td>"+matchName+"</td><td>"+value.event.openDate+"</td></tr>");;
+         makeClickable(matchId, matchName); 
       });
     });
   });
+
+  var makeClickable = function(matchId, matchName) {
+    $("#"+matchId).click(function(){
+      console.log(matchId);
+      $.get('/getMarketId/'+matchId+'/'+matchName, function(marketId) {
+        $('p').text(marketId);
+        $.get('/getOdds/'+marketId, function(odds) {
+          console.log(odds);
+          $('h2').append("Win "+odds.team1Win);
+          $('h2').append("Loose "+odds.team1Loose);
+          $('h2').append("Draw "+odds.draw);
+        })
+      });
+    });  
+  }
 })

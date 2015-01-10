@@ -10,14 +10,17 @@ describe("Match", function() {
   });
 
   it("knows it's betfair event id", function() {
+    match.eventId = 27340168;
     expect(match.eventId).toEqual(27340168);
   });
 
   it("knows the name of the home team", function() {
+    match.team1 = "Espanyol";
     expect(match.team1).toEqual("Espanyol");
   });
 
   it("knows the name of the away team", function() {
+     match.team2 = "Barcelona";
     expect(match.team2).toEqual("Barcelona");
   });
 

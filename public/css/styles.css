@@ -13,3 +13,7 @@ a {
   border-radius: 5px;
   padding: .5vw;
 }
+
+button {
+  margin: 5px;
+}

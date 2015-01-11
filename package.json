@@ -5,14 +5,17 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha test/features && jasmine-node --verbose test/spec",
-    "start": "node server.js"
+    "start": "node .bin/www"
   },
   "author": "Anna",
   "license": "ISC",
   "dependencies": {
     "ejs": "^2.0.8",
     "express": "^4.10.7",
-    "request": "^2.51.0"
+    "pg": "^4.1.1",
+    "request": "^2.51.0",
+    "sequelize": "^2.0.0-rc7",
+    "sequelize-cli": "^1.0.2"
   },
   "devDependencies": {
     "chai": "^1.10.0",

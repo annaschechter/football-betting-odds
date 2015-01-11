@@ -4,6 +4,7 @@ var request = require('request');
 var config = require('./config');
 var Odds = require('./lib/odds');
 var Match = require('./lib/match');
+var models = require('./models');
 
 app.set('view engine', 'ejs');
 app.set('views',__dirname + '/views');
@@ -30,6 +31,7 @@ var setOptions = function(data, route) {
 }
 
 app.get('/matches', function(req, res) {
+  console.log(process.env.DB_USERNAME);
   var data = { "filter": {"eventTypeIds": [1], "inPlayOnly": true, "marketTypeCodes": ["MATCH_ODDS"]} };
   var options = setOptions(data, "listEvents/");
 
@@ -42,8 +44,9 @@ app.get('/matches', function(req, res) {
 var match = new Match();
 app.get('/getMarketId/:matchId/:matchName', function(req, res) {
   match.eventId = req.params.matchId;
-  match.team1 = req.params.matchName.split('v')[0];
-  match.team2 = req.params.matchName.split('v')[1];
+  match.team1 = req.params.matchName.split(' v ')[0];
+  match.team2 = req.params.matchName.split(' v ')[1];
+  models.Match.create({eventId: match.eventId, team1: match.team1, team2: match.team2});
   var data = { "filter": {"eventIds": [match.eventId], "marketTypeCodes": ["MATCH_ODDS"]}, "maxResults": "1" };
   var options = setOptions(data, "listMarketCatalogue/");
   
@@ -79,6 +82,4 @@ app.get('/getOdds/:marketId', function(req, res) {
   });
 });
 
-server.listen(3000, function() {
-  console.log("Listening on port 3000");
-})
+module.exports = app

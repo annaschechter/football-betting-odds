@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        // Match.hasMany(models.Odds);
+        Match.hasMany(models.Odds);
       }
     }
   });

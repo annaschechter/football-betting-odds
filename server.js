@@ -72,10 +72,12 @@ app.get('/getOdds/:marketId', function(req, res) {
                             res1.body[0].runners[1].lastPriceTraded,
                             res1.body[0].runners[2].lastPriceTraded);
         match.updateOdds(odds);
+        models.Odds.create({team1Win: odds.team1Win, team1Loose: odds.team1Loose, draw: odds.draw})
         res.send(odds);
       } else {
         var odds = new Odds(0, 0, 0);
         match.updateOdds(odds);
+        models.Odds.create({team1Win: odds.team1Win, team1Loose: odds.team1Loose, draw: odds.draw})
         res.send(odds);
       }
     }

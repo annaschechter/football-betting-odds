@@ -1,0 +1,9 @@
+<p>Please select a match from our records</p>
+<select>
+  <% matches.forEach(function(match) { %>
+    <option><%=match.eventId%>: <%=match.team1%> v <%=match.team2%></option>
+  <% }) %>
+</select>
+<button id="submit">Submit</button>
+<h2></h2>
+<table id="odds"></table>

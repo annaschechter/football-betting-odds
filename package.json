@@ -12,6 +12,7 @@
   "dependencies": {
     "ejs": "^2.0.8",
     "express": "^4.10.7",
+    "express-ejs-layouts": "^1.1.0",
     "pg": "^4.1.1",
     "request": "^2.51.0",
     "sequelize": "^2.0.0-rc7",

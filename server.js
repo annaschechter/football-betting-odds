@@ -5,10 +5,12 @@ var config = require('./config');
 var Odds = require('./lib/odds');
 var Match = require('./lib/match');
 var models = require('./models');
+var expressLayouts = require('express-ejs-layouts');
 
 app.set('view engine', 'ejs');
 app.set('views',__dirname + '/views');
 app.use(require('express').static(__dirname + '/public'));
+app.use(expressLayouts);
 
 app.get('/', function(req, res) {
   res.render('index');
@@ -67,7 +69,33 @@ app.get('/getOdds/:marketId/:matchId', function(req, res) {
   });
 });
 
-// methods=======================================================================
+app.get('/history', function(req, res) {
+  models.Match.all().complete(function(err, matches) {
+    var allMatches = matches;
+    res.render('history', {matches: allMatches});
+  });
+});
+
+app.get('/getData/:matchId', function(req, res) {
+  console.log("im here")
+  var eventId = req.params.matchId;
+  models.Match.find({where:{eventId: eventId}}).complete(function(err, foundMatch) {
+    if(!!err) {
+      console.log(err)
+    } else {
+      var matchId = foundMatch.id;
+      models.Odds.findAll({where:{MatchId: matchId}}).complete(function(err, odds){
+        if(!!err) {
+          console.log(err)
+        } else {
+          res.send(odds);
+        }
+      });
+    }
+  });
+});
+
+// ==================================methods====================================
 var setOptions = function(data, route) {
   var options = {
     url: 'https://api.betfair.com/exchange/betting/rest/v1.0/'+route,
